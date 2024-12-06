@@ -20,22 +20,18 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::group([
-
-    'middleware' => 'api',
-    'prefix' => 'auth'
-
-], function ($router) {
-
+Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
-    Route::post('produk-create', [ProdukController::class, 'store'])->middleware('auth:api');
-    Route::put('produk-edit/{id}', [ProdukController::class, 'edit'])->middleware('auth:api');
-    Route::delete('produk-delete/{id}', [ProdukController::class, 'destroy'])->middleware('auth:api');
 });
 
-Route::get('produk', [ProdukController::class, 'index']);
-Route::get('produk/{id}', [ProdukController::class, 'show']);
+Route::group(['prefix' => 'produk'], function () {
+    Route::put('edit/{id}', [ProdukController::class, 'edit'])->middleware('auth:api');
+    Route::delete('delete/{id}', [ProdukController::class, 'destroy'])->middleware('auth:api');
+    Route::post('create', [ProdukController::class, 'store'])->middleware('auth:api');
+    Route::get('', [ProdukController::class, 'index']);
+    Route::get('{id}', [ProdukController::class, 'show']);
+});
