@@ -6,6 +6,7 @@ use App\Models\Produk;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ProdukController extends Controller
 {
@@ -50,7 +51,10 @@ class ProdukController extends Controller
     public function store(Request $request)
     {
         $validate = Validator::make($request->all(), [
-            'nama_produk' => 'required|unique:produks',
+            'nama_produk' => [
+                'required',
+                Rule::unique('produks')->whereNull('deleted_at')
+            ],
             'detail' => 'required'
         ]);
 
