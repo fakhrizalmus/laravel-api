@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,12 +28,22 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
+    Route::get('profile', [UserController::class, 'index']);
+    Route::get('myproduk', [UserController::class, 'myproduk']);
 });
 
 Route::group(['prefix' => 'produk'], function () {
-    Route::put('edit/{id}', [ProdukController::class, 'edit'])->middleware('auth:api');
+    Route::put('edit/{id}', [ProdukController::class, 'update'])->middleware('auth:api');
     Route::delete('delete/{id}', [ProdukController::class, 'destroy'])->middleware('auth:api');
     Route::post('create', [ProdukController::class, 'store'])->middleware('auth:api');
     Route::get('', [ProdukController::class, 'index']);
-    Route::get('{id}', [ProdukController::class, 'show']);
+    Route::get('{id}', [ProdukController::class, 'show'])->middleware('auth:api');
+});
+
+Route::group(['prefix' => 'kategori'], function () {
+    Route::put('edit/{id}', [KategoriController::class, 'update'])->middleware('auth:api');
+    Route::delete('delete/{id}', [KategoriController::class, 'destroy'])->middleware('auth:api');
+    Route::post('create', [KategoriController::class, 'store'])->middleware('auth:api');
+    Route::get('', [KategoriController::class, 'index']);
+    Route::get('{id}', [KategoriController::class, 'show'])->middleware('auth:api');
 });
