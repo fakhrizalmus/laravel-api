@@ -149,7 +149,10 @@ class ProdukController extends Controller
             ], 404);
         }
         $validate = Validator::make($request->all(), [
-            'nama_produk' => 'required|unique:produks',
+            'nama_produk' => [
+                'required',
+                Rule::unique('produks')->whereNull('deleted_at')->ignore($id)
+            ],
             'detail' => 'required'
         ]);
 
@@ -157,6 +160,14 @@ class ProdukController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $validate->errors()
+            ], 400);
+        }
+
+        $kategori = Kategori::find($request['kategori_id']);
+        if (empty($kategori)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Kategori Not Found'
             ], 400);
         }
 

@@ -104,7 +104,10 @@ class KategoriController extends Controller
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
-            'kategori' => 'required|unique:kategoris'
+            'kategori' => [
+                'required',
+                Rule::unique('kategoris')->whereNull('deleted_at')->ignore($id)
+            ]
         ]);
 
         if ($validate->fails()) {
